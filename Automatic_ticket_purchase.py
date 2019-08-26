@@ -9,10 +9,7 @@ damai_url = "https://www.damai.cn/"
 # 登录页
 login_url = "https://passport.damai.cn/login?ru=https%3A%2F%2Fwww.damai.cn%2F"
 # 抢票目标页
-# target_url = "https://detail.damai.cn/item.htm?spm=a2oeg.search_category.0.0.592428dfAVADSo&id=598610277762&clicktitle=%E5%91%A8%E6%9D%B0%E4%BC%A62019%E5%85%A8%E6%96%B0%E4%B8%96%E7%95%8C%E5%B7%A1%E5%9B%9E%E6%BC%94%E5%94%B1%E4%BC%9A%E2%80%94%E5%8D%97%E4%BA%AC%E7%AB%99"
-target_url="https://detail.damai.cn/item.htm?spm=a2oeg.search_category.0.0.18e1c268AO52oR&id=600930811308&clicktitle=%E8%90%A7%E6%95%AC%E8%85%BE%E5%A8%B1%E4%B9%90%E5%85%88%E7%94%9F%E5%B7%A1%E5%9B%9E%E6%BC%94%E5%94%B1%E4%BC%9A%E7%BB%8D%E5%85%B4%E7%AB%99"
-# target_url="https://detail.damai.cn/item.htm?spm=a2oeg.search_category.0.0.17d24d15CjZAB1&id=597705805772&clicktitle=2019%E7%88%B1%E5%A5%87%E8%89%BA%E5%B0%96%E5%8F%AB%E4%B9%8B%E5%A4%9C%E6%BC%94%E5%94%B1%E4%BC%9A%E5%8C%97%E4%BA%AC%E7%AB%99"
-
+target_url="https://detail.damai.cn/item.htm?spm=a2oeg.search_category.0.0.5fa628dfj4MGiZ&id=601280365318&clicktitle=WE%E2%80%A2%E7%BB%BD%E6%94%BE2019%E8%9A%8C%E5%9F%A0%E6%BC%94%E5%94%B1%E4%BC%9A"
 
 name = "麦子14pOD"
 phone = "18270913797"
@@ -81,13 +78,13 @@ class Concert(object):
         self.status = 2  # 登录成功标识
         print("###登录成功###")
 
-    def choose_ticket(self):
+    def choose_ticket(self,priceWanted):
         if self.status == 2:  # 登录成功入口
             self.num = 1  # 第一次尝试
 
             print("=" * 30)
             print("###开始进行日期及票价选择###")
-            while self.driver.title.find('确认订单') == -1:  # 如果跳转到了订单结算界面就算这步成功了，否则继续执行此步
+            while self.driver.title.find('支付宝 - 网上支付 安全快速！') == -1:  # 如果跳转到了付款界面就算这步成功了，否则继续执行此步
                 # try:
                 #     self.driver.find_elements_by_xpath(
                 #         '//html//body//div[@class = "perform__order__price"]//div[2]//div//div//a[2]')[
@@ -102,12 +99,21 @@ class Concert(object):
                 # print("日期选择失败")
 
                 # cart = self.driver.find_element_by_class_name('perform')  # 获得选票界面的表单值
+                # cart = self.driver.find_element_by_class_name('perform__order__select')
+                #选择价格
+                try:
+                    self.driver.find_elements_by_xpath(
+                        '//div[@class="perform__order__select"]//div[@class="select_right"]//div[@class="select_right_list"]//div['+priceWanted+']'
+                    )[0].click()
+                except Exception as e:
+                    print("###该价位的票已售完")
+                    print(e)
 
                 # try:各种按钮的点击,
                 buybutton = self.driver.find_element_by_class_name('buybtn').text
                 try:
                     # buybutton = self.driver.find_element_by_class_name('buybtn').text
-                    if buybutton == "即将开抢":
+                    if buybutton == "即将开售":
                         self.status = 2
                         self.driver.get(target_url)
                         print('###抢票未开始，刷新等待开始###')
@@ -129,10 +135,12 @@ class Concert(object):
                     elif buybutton == "提交缺货登记":
                         print('###抢票失败，请手动提交缺货登记###')
                         break
+                    else:
+                        self.driver.get(target_url)
 
                 except:
                     print('###未跳转到订单结算界面###')
-
+                    self.driver.get(target_url)
                 title = self.driver.title
                 if title == "确认订单":
                     self.check_order()
@@ -142,10 +150,10 @@ class Concert(object):
                     print("###请自行选择位置和票价###")
                     break
 
-                # if title !="确认订单" :                                     #如果前一次失败了，那就刷新界面重新开始
-                #     self.status=2
-                #     self.driver.get(target_url)
-                #     print('###抢票失败，从新开始抢票###')
+                if title !="支付宝 - 网上支付 安全快速！" :                                     #如果前一次失败了，那就刷新界面重新开始
+                    self.status=2
+                    self.driver.get(target_url)
+                    print('###抢票失败，从新开始抢票###')
 
     def check_order(self):
         if self.status in [3, 4]:
@@ -211,8 +219,8 @@ if __name__ == '__main__':
     try:
         con = Concert()  # 具体如果填写请查看类中的初始化函数
         con.enter_concert()
-        con.choose_ticket()
+        con.choose_ticket("3")
 
     except Exception as e:
         print(e)
-        con.finish()
+        # con.finish()
