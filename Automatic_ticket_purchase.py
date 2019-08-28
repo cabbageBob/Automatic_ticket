@@ -144,35 +144,34 @@ class Concert(object):
                 title = self.driver.title
                 if title == "确认订单":
                     self.check_order()
-
                 # 若是选座购买，自行选座
                 elif self.status == 5:
                     print("###请自行选择位置和票价###")
                     break
 
-                if title !="支付宝 - 网上支付 安全快速！" :                                     #如果前一次失败了，那就刷新界面重新开始
-                    self.status=2
-                    self.driver.get(target_url)
-                    print('###抢票失败，从新开始抢票###')
+                # if title !="支付宝 - 网上支付 安全快速！" :                                     #如果前一次失败了，那就刷新界面重新开始
+                #     self.status=2
+                #     self.driver.get(target_url)
+                #     print('###抢票失败，从新开始抢票###')
 
     def check_order(self):
         if self.status in [3, 4]:
             print('###开始确认订单###')
             print('###默认购票人信息###')
-            try:
-                # 姓名和电话的填写，这是绝对路径，由于大麦网目标页会更新，出现问题修改xpath即可
-                time.sleep(0.5)
-                self.driver.find_elements_by_xpath(
-                    '//div[@class = "w1200"]//div[@class = "delivery-form"]//div[1]//div[2]//span//input')[0].send_keys(
-                    name)
-                time.sleep(0.5)
-                self.driver.find_elements_by_xpath(
-                    '//div[@class = "w1200"]//div[@class = "delivery-form"]//div[2]//div[2]//span[2]//input')[
-                    0].send_keys(phone)
-                time.sleep(0.5)
-            except Exception as e:
-                print("###填写确认订单信息时，联系人手机号填写失败###")
-                print(e)
+            # try:
+            #     # 姓名和电话的填写，这是绝对路径，由于大麦网目标页会更新，出现问题修改xpath即可
+            #     time.sleep(0.5)
+            #     self.driver.find_elements_by_xpath(
+            #         '//div[@class = "w1200"]//div[@class = "delivery-form"]//div[1]//div[2]//span//input')[0].send_keys(
+            #         name)
+            #     time.sleep(0.5)
+            #     self.driver.find_elements_by_xpath(
+            #         '//div[@class = "w1200"]//div[@class = "delivery-form"]//div[2]//div[2]//span[2]//input')[
+            #         0].send_keys(phone)
+            #     time.sleep(0.5)
+            # except Exception as e:
+            #     print("###填写确认订单信息时，联系人手机号填写失败###")
+            #     print(e)
             try:
                 time.sleep(0.5)
                 # 默认选第一个购票人信息
@@ -219,7 +218,7 @@ if __name__ == '__main__':
     try:
         con = Concert()  # 具体如果填写请查看类中的初始化函数
         con.enter_concert()
-        con.choose_ticket("3")
+        con.choose_ticket("2")
 
     except Exception as e:
         print(e)
