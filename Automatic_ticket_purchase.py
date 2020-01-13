@@ -11,10 +11,6 @@ login_url = "https://passport.damai.cn/login?ru=https%3A%2F%2Fwww.damai.cn%2F"
 # 抢票目标页
 target_url="https://detail.damai.cn/item.htm?spm=a2oeg.search_category.0.0.5fa628dfj4MGiZ&id=601280365318&clicktitle=WE%E2%80%A2%E7%BB%BD%E6%94%BE2019%E8%9A%8C%E5%9F%A0%E6%BC%94%E5%94%B1%E4%BC%9A"
 
-name = "麦子14pOD"
-phone = "18270913797"
-
-
 class Concert(object):
     def __init__(self):
 

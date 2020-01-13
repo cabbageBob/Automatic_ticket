@@ -1,1 +1,1 @@
-python ticket.py
+python Automatic_ticket_purchase.py
